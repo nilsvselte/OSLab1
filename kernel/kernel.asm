@@ -6513,6 +6513,7 @@ sys_procname(void){
     80002f0a:	4505                	li	a0,1
     80002f0c:	00000097          	auipc	ra,0x0
     80002f10:	d24080e7          	jalr	-732(ra) # 80002c30 <argaddr>
+  //see sys_year for explanation
   if (copyout(myproc()->pagetable, (uint64)user_ptr, (char*)name_ptr, strlen(name_ptr) + 1) < 0)
     80002f14:	fffff097          	auipc	ra,0xfffff
     80002f18:	be6080e7          	jalr	-1050(ra) # 80001afa <myproc>
@@ -6579,6 +6580,7 @@ sys_state(void){
     80002f8e:	4505                	li	a0,1
     80002f90:	00000097          	auipc	ra,0x0
     80002f94:	ca0080e7          	jalr	-864(ra) # 80002c30 <argaddr>
+  //see sys_year for explanation
   if(copyout(myproc()->pagetable,(uint64)user_ptr, (char*)state_ptr, strlen(state_ptr) + 1) < 0)
     80002f98:	fffff097          	auipc	ra,0xfffff
     80002f9c:	b62080e7          	jalr	-1182(ra) # 80001afa <myproc>
@@ -6622,10 +6624,10 @@ sys_year(void)
     80002fe4:	f04a                	sd	s2,32(sp)
     80002fe6:	ec4e                	sd	s3,24(sp)
     80002fe8:	0080                	addi	s0,sp,64
+  int *user_buf;
   int user_buf_size;
   int count = 0;
   struct proc *p;
-
   // Fetch the system call arguments: pointer to user buffer and its size
   argaddr(0, (uint64 *)&user_buf);
     80002fea:	fc840593          	addi	a1,s0,-56
@@ -6637,8 +6639,7 @@ sys_year(void)
     80002ffc:	4505                	li	a0,1
     80002ffe:	00000097          	auipc	ra,0x0
     80003002:	c12080e7          	jalr	-1006(ra) # 80002c10 <argint>
-
-  // Check if user_buf_size is valid
+  // Check if user_buf_size is valid (internet said it was a good idea)
   if (user_buf_size <= 0)
     80003006:	fc442783          	lw	a5,-60(s0)
     8000300a:	06f05363          	blez	a5,80003070 <sys_year+0x94>
@@ -6650,17 +6651,18 @@ sys_year(void)
     8000301e:	4901                	li	s2,0
     80003020:	a809                	j	80003032 <sys_year+0x56>
     return -1;
-
   // Iterate over the process table and copy PIDs to user buffer
   for(p = proc; p < &proc[NPROC] && count < user_buf_size; p++) {
     80003022:	02998f63          	beq	s3,s1,80003060 <sys_year+0x84>
     80003026:	16848493          	addi	s1,s1,360
     8000302a:	fc442783          	lw	a5,-60(s0)
     8000302e:	02f95963          	bge	s2,a5,80003060 <sys_year+0x84>
+    //we dont want unused processes
     if(p->state != UNUSED) {
     80003032:	fe84a783          	lw	a5,-24(s1)
     80003036:	d7f5                	beqz	a5,80003022 <sys_year+0x46>
       // Check for user-space memory access error
+      //copyout res, uses myproc() because it is a kernel function apparently and we need the proc table
       if(copyout(myproc()->pagetable, (uint64)&user_buf[count], (char*)&p->pid, sizeof(int)) < 0)
     80003038:	fffff097          	auipc	ra,0xfffff
     8000303c:	ac2080e7          	jalr	-1342(ra) # 80001afa <myproc>
@@ -6674,13 +6676,11 @@ sys_year(void)
     80003054:	61c080e7          	jalr	1564(ra) # 8000166c <copyout>
     80003058:	00054e63          	bltz	a0,80003074 <sys_year+0x98>
         return -1;  // Return error if copyout fails
-
       count++;
     8000305c:	2905                	addiw	s2,s2,1
     8000305e:	b7d1                	j	80003022 <sys_year+0x46>
     }
   }
-
   return count;  // Return the number of PIDs written
     80003060:	854a                	mv	a0,s2
 }

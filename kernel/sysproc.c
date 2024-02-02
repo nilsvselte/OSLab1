@@ -100,6 +100,7 @@ sys_procname(void){
     return -1;
   name_ptr = name(pid);
   argaddr(1, (uint64 *) &user_ptr);
+  //see sys_year for explanation
   if (copyout(myproc()->pagetable, (uint64)user_ptr, (char*)name_ptr, strlen(name_ptr) + 1) < 0)
   {
     return -1;
@@ -117,6 +118,7 @@ sys_state(void){
     return -1;
   state_ptr = state(pid);
   argaddr(1, (uint64 *) &user_ptr);
+  //see sys_year for explanation
   if(copyout(myproc()->pagetable,(uint64)user_ptr, (char*)state_ptr, strlen(state_ptr) + 1) < 0)
   {
     return -1;
@@ -131,25 +133,22 @@ sys_year(void)
   int user_buf_size;
   int count = 0;
   struct proc *p;
-
   // Fetch the system call arguments: pointer to user buffer and its size
   argaddr(0, (uint64 *)&user_buf);
   argint(1, &user_buf_size);
-
-  // Check if user_buf_size is valid
+  // Check if user_buf_size is valid (internet said it was a good idea)
   if (user_buf_size <= 0)
     return -1;
-
   // Iterate over the process table and copy PIDs to user buffer
   for(p = proc; p < &proc[NPROC] && count < user_buf_size; p++) {
+    //we dont want unused processes
     if(p->state != UNUSED) {
       // Check for user-space memory access error
+      //copyout res, uses myproc() because it is a kernel function apparently and we need the proc table
       if(copyout(myproc()->pagetable, (uint64)&user_buf[count], (char*)&p->pid, sizeof(int)) < 0)
         return -1;  // Return error if copyout fails
-
       count++;
     }
   }
-
   return count;  // Return the number of PIDs written
 }
