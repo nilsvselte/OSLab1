@@ -16,7 +16,14 @@ main(void)
     // Process or print the PIDs
     printf("Received %d PIDs:\n", num_pids);
     for (int i = 0; i < num_pids; i++) {
+        char* stateStr = (char*)malloc(16);
+        char* nameStr = (char*)malloc(16);
+        state(pid_array[i],stateStr);
+        procname(pid_array[i],nameStr);
+
         printf("PID: %d\n", pid_array[i]);
+        printf("State: %s\n", stateStr);
+        printf("Name: %s\n", nameStr);
     }
 
     exit(0);

@@ -110,3 +110,13 @@ year:
  li a7, SYS_year
  ecall
  ret
+.global state
+state:
+ li a7, SYS_state
+ ecall
+ ret
+.global procname
+procname:
+ li a7, SYS_procname
+ ecall
+ ret

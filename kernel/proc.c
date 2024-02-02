@@ -63,6 +63,71 @@ procinit(void)
   }
 }
 
+char*
+name(int pid)
+{
+  //search trough processes for the correct process and return it's name
+  //Rough copy of wait, but instead of returning pid, it returns name
+  //Get the address of thr process table
+  struct proc *pp;
+  //struct proc *p = myproc();
+
+  acquire(&wait_lock);
+
+  for(pp = proc; pp < &proc[NPROC]; pp++){
+      if(pp->pid == pid){
+        release(&wait_lock);
+        //return a pointer to the name
+        return pp->name;
+      }
+    }
+    release(&wait_lock);
+    return 0;
+}
+
+char*
+procstate2str(enum procstate state)
+{
+  switch(state){
+    case UNUSED:
+      return "UNUSED";
+    case USED:
+      return "USED";
+    case SLEEPING:
+      return "SLEEPING";
+    case RUNNABLE:
+      return "RUNNABLE";
+    case RUNNING:
+      return "RUNNING";
+    case ZOMBIE:
+      return "ZOMBIE";
+    default:
+      return "UNKNOWN";
+  }
+}
+
+char*
+state(int pid)
+{
+  //do the same as name, but instead of returning name, return state
+  struct proc *pp;
+  //struct proc *p = myproc();
+  acquire(&wait_lock);
+
+  for(pp = proc; pp < &proc[NPROC]; pp++){
+      if(pp->pid == pid){
+        release(&wait_lock);
+        //return a pointer to the state
+        return procstate2str(pp->state);
+      }
+      
+    }
+    release(&wait_lock);
+    return 0;
+}
+
+
+
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.

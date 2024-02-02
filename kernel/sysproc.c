@@ -91,6 +91,40 @@ sys_uptime(void)
 }
 
 uint64
+sys_procname(void){
+  int pid;
+  char* name_ptr;
+  char* user_ptr;
+  argint(0, &pid);
+  if(pid < 0)
+    return -1;
+  name_ptr = name(pid);
+  argaddr(1, (uint64 *) &user_ptr);
+  if (copyout(myproc()->pagetable, (uint64)user_ptr, (char*)name_ptr, strlen(name_ptr) + 1) < 0)
+  {
+    return -1;
+  }
+  return 1;
+}
+
+uint64
+sys_state(void){
+  int pid;
+  char *state_ptr;
+  char *user_ptr;
+  argint(0, &pid);
+  if(pid < 0)
+    return -1;
+  state_ptr = state(pid);
+  argaddr(1, (uint64 *) &user_ptr);
+  if(copyout(myproc()->pagetable,(uint64)user_ptr, (char*)state_ptr, strlen(state_ptr) + 1) < 0)
+  {
+    return -1;
+  }
+  return 1;
+}
+
+uint64
 sys_year(void)
 {
   int *user_buf;

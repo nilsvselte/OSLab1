@@ -17,7 +17,9 @@ struct context {
   uint64 s10;
   uint64 s11;
 };
-
+//functions
+char* state(int pid);
+char* name(int pid);
 
 // Per-CPU state.
 struct cpu {

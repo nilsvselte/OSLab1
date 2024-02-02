@@ -23,6 +23,9 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 uint64 year(int *array, int size);
+uint64 state(int pid, char *str);
+uint64 procname(int pid, char *str);
+
 
 
 // ulib.c

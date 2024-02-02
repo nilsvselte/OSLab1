@@ -21,3 +21,5 @@
 #define SYS_mkdir 20
 #define SYS_close 21
 #define SYS_year 22
+#define SYS_procname 23
+#define SYS_state 24
