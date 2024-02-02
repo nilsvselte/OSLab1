@@ -16,11 +16,11 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
    8:	4785                	li	a5,1
    a:	02a7d063          	bge	a5,a0,2a <main+0x2a>
-        printf("Hello World.\n");
+        printf("Hello World\n");
         return 1;
     }
 
-    printf("\n Hello, %s!\n", argv[1]);
+    printf("\nHello %s, nice to meet you!\n", argv[1]);
    e:	658c                	ld	a1,8(a1)
   10:	00001517          	auipc	a0,0x1
   14:	80050513          	addi	a0,a0,-2048 # 810 <malloc+0x102>
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
   24:	6402                	ld	s0,0(sp)
   26:	0141                	addi	sp,sp,16
   28:	8082                	ret
-        printf("Hello World.\n");
+        printf("Hello World\n");
   2a:	00000517          	auipc	a0,0x0
   2e:	7d650513          	addi	a0,a0,2006 # 800 <malloc+0xf2>
   32:	00000097          	auipc	ra,0x0
@@ -782,7 +782,7 @@ printint(int fd, int xx, int base, int sgn)
     buf[i++] = digits[x % base];
  3be:	2601                	sext.w	a2,a2
  3c0:	00000517          	auipc	a0,0x0
- 3c4:	4c050513          	addi	a0,a0,1216 # 880 <digits>
+ 3c4:	4d050513          	addi	a0,a0,1232 # 890 <digits>
  3c8:	883a                	mv	a6,a4
  3ca:	2705                	addiw	a4,a4,1
  3cc:	02c5f7bb          	remuw	a5,a1,a2
@@ -881,7 +881,7 @@ vprintf(int fd, const char *fmt, va_list ap)
  47a:	02500a13          	li	s4,37
  47e:	4c55                	li	s8,21
  480:	00000c97          	auipc	s9,0x0
- 484:	3a8c8c93          	addi	s9,s9,936 # 828 <malloc+0x11a>
+ 484:	3b8c8c93          	addi	s9,s9,952 # 838 <malloc+0x12a>
         printptr(fd, va_arg(ap, uint64));
       } else if(c == 's'){
         s = va_arg(ap, char*);
@@ -893,7 +893,7 @@ vprintf(int fd, const char *fmt, va_list ap)
  48c:	4d41                	li	s10,16
     putc(fd, digits[x >> (sizeof(uint64) * 8 - 4)]);
  48e:	00000b97          	auipc	s7,0x0
- 492:	3f2b8b93          	addi	s7,s7,1010 # 880 <digits>
+ 492:	402b8b93          	addi	s7,s7,1026 # 890 <digits>
  496:	a839                	j	4b4 <vprintf+0x6a>
         putc(fd, c);
  498:	85ca                	mv	a1,s2
@@ -1023,7 +1023,7 @@ vprintf(int fd, const char *fmt, va_list ap)
  5b2:	bde5                	j	4aa <vprintf+0x60>
           s = "(null)";
  5b4:	00000997          	auipc	s3,0x0
- 5b8:	26c98993          	addi	s3,s3,620 # 820 <malloc+0x112>
+ 5b8:	27c98993          	addi	s3,s3,636 # 830 <malloc+0x122>
         while(*s != 0){
  5bc:	85ee                	mv	a1,s11
  5be:	bff9                	j	59c <vprintf+0x152>
